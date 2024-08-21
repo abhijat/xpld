@@ -38,10 +38,10 @@ findRedpandaLogsHere = findPath (isLogFile . takeFileName) "."
     isLogFile f = f == "redpanda.log.tgz" || f == "redpanda.log.tar.gz"
 
 extractLog :: FilePath -> FilePath -> IO ()
-extractLog logFile destDir =
+extractLog logFile destDir = do
   putStrLn ("extracting " <> logFile <> " to " <> destDir)
-    >> BL.readFile logFile
-    >>= Tar.unpack destDir . Tar.read . GZip.decompress
+  BL.readFile logFile
+    >>= Tar.unpack destDir . Tar.read . GZip.decompress . GZip.decompress
 
 extractInPlace :: FilePath -> IO ()
 extractInPlace filePath = extractLog filePath $ takeDirectory filePath
